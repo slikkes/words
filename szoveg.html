@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>szöveg</title>
+	<meta charset="utf-8">
+	<script src="node_modules/jquery/dist/jquery.min.js"></script>
+	<style>
+		#result{
+			background-color:red;
+			color:white;
+		}
+		#output{
+			float:left;
+			width:40px;
+			height:20px;
+			background-color:rgba(200,140,20,.3);
+		}
+	</style>
+</head>
+<body onload="main()">
+	<div id="print">
+		<input type="input" id="searchW"><div id="output" ></div>
+		<button  id="button">nyomjad</button>
+		<button  id="count">számold</button><br>
+		<textarea id="text" cols="100" rows="25">A cricket match on 11 and 12 February 1851, played by teams from Van Diemen's Land (now Tasmania) and Port Phillip District (now Victoria), was the first between two Australian colonies, recognised in later years as the initial first-class cricket match in Australia. It took place at the Launceston Racecourse (pictured in 2009). The match was one of the celebratory events marking the separation of the Port Phillip District from New South Wales in 1851 as the colony of Victoria. The team representing Port Phillip was drawn from the Melbourne Cricket Club; the Van Diemen's Land team consisted of players from Launceston and Hobart. The visiting Port Phillip team was expected to have an advantage but had difficulties with the batting conditions and the opposition's unusually slow bowling. Batting first, Port Phillip scored 82; Van Diemen's Land replied with 104, assisted by a large number of extras. Batting again, the Victorian team scored 57; the Tasmanian team needed 36 to win, which they accomplished on the second day to record a three-wicket victory. Following this match, intercolonial cricket became increasingly widespread.
+		</textarea>
+		<div id="minmax">
+			<p id="max"></p>
+			<p id="min"></p>
+		</div>
+
+	</div>
+	<script>
+
+
+
+		
+
+		class Word{
+			constructor(word,number){
+				this.word=word;
+				this.number=number;
+			}
+		}
+
+
+		let words=[];
+
+		let Text=$("#text").val();
+
+		function main(){
+			createWordsArray(Text);
+			for(let i=0;i<words.length;i++){
+				let searchWord=words[i].word;
+				searchAndCount(searchWord);
+			}
+			minmax();
+		}
+
+
+
+
+		function createWordsArray(text){
+			let sub="";
+			let j=0;
+			for(let i=0;i<text.length;i++){
+				if(text.charAt(i)!=' '){
+					if(text.charAt(i)==','||text.charAt(i)=='.'||text.charAt(i)==';'){
+						words[j]=new Word(text.charAt(i),1);
+						j++
+					}else{
+						sub+=text.charAt(i);
+					}
+				}else{
+					words[j]=new Word(sub,1);
+					sub="";
+					j++;
+				}
+			}
+		}
+			
+
+
+
+
+		function searchAndCount(word){
+			for(let i=0;i<words.length;i++){
+				if(words[i].word.toLowerCase()==word.toLowerCase()){
+					words[i].number++;
+				}
+			}
+
+		}
+
+
+
+		$("#count").click(function(){
+			words=[]
+			Text=$("#text").val();
+			main();
+			minmax();
+		});
+
+		function minmax(){
+			let Min= new min();
+			let Max= new max();
+			$('#min').html("min: "+Min[0]+" "+Min[1]+"darab");
+			$('#max').html("max: "+Max[0]+" "+Max[1]+"darab");
+		}
+
+		$("#button").click(function(){
+			let searchW=$("#searchW").val();
+			console.log(searchW);
+			$("#output").html(words[searchn(searchW)].number);
+		})
+
+
+
+
+		function searchn(word){
+			let i=0;
+			while (words[i].word.toLowerCase()!=word.toLowerCase()&&i<words.length-1){i++;}
+			return i;
+		}
+
+		
+
+		$(document).keypress(function(e) {
+    		if(e.which == 13) {
+        	main();
+   		 	}
+		});
+
+
+		function min(){
+			let min=words.length;
+			let minWord="";
+			words.forEach(function(element){
+				if(element.number<min){
+					min=element.number;
+					minWord=element.word;
+					console.log(min+"   "+minWord);
+				}
+			});
+			return [minWord, min];
+		}
+
+
+
+
+		function max(){
+			let max=0;
+			let maxWord="";
+			words.forEach(function(element){
+				if(element.number>max){
+					max=element.number;
+					maxWord=element.word;
+					console.log(max+"   "+maxWord);
+				}
+			});
+			return [maxWord, max];
+		}
+
+
+
+
+	
+	</script>
+</body>
+</html>
